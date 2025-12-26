@@ -1,129 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Dashboard</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <title>Dashboard Builder</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack.all.js"></script>
+  <!-- Gridstack -->
+  <link href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack-all.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        body { background-color: #f1f5f9; }
-        .grid-stack { 
-            background: rgba(255, 255, 255, 0.5); 
-            min-height: 500px; 
-            border: 2px dashed #cbd5e1; 
-            border-radius: 12px; 
-        }
-        .grid-stack-item-content { 
-            background: white !important; 
-            border-radius: 12px !important; 
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            padding: 10px;
-        }
-    </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="p-8">
+<body>
 
-    <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6 text-slate-800">My Dashboard Builder</h1>
+<h1>📊 Dashboard Builder</h1>
 
-        <div class="bg-white p-6 rounded-xl shadow-sm mb-6 flex gap-4 items-end">
-            <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-700">Metric Name</label>
-                <input type="text" id="metricName" placeholder="Total Revenue" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Visual Type</label>
-                <select id="visualType" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
-                    <option value="bar">Bar Chart</option>
-                    <option value="line">Line Chart</option>
-                    <option value="pie">Pie Chart</option>
-                </select>
-            </div>
-            <button onclick="addNewWidget()" class="bg-blue-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-700">
-                + Add to Dashboard
-            </button>
-        </div>
+<div class="controls">
+  <input id="metricName" placeholder="Metric Name" />
+  <select id="chartType">
+    <option value="bar">Bar Chart</option>
+    <option value="line">Line Chart</option>
+    <option value="pie">Pie Chart</option>
+    <option value="kpi">KPI Card</option>
+  </select>
+  <button onclick="addWidget()">➕ Add to Dashboard</button>
+</div>
 
-        <div id="dashboard-grid" class="grid-stack"></div>
-    </div>
+<div class="grid-stack"></div>
 
-    <script>
-        let grid;
-
-        // Initialize GridStack when the window loads
-        window.onload = function() {
-            try {
-                grid = GridStack.init({
-                    cellHeight: 100,
-                    margin: 10,
-                    animate: true
-                }, '#dashboard-grid');
-                console.log("GridStack loaded successfully");
-            } catch (e) {
-                alert("The dashboard engine failed to start. Please check if you are connected to the internet.");
-            }
-        };
-
-        let chartIdCounter = 0;
-
-        function addNewWidget() {
-            if (!grid) return;
-
-            const name = document.getElementById('metricName').value || "New Metric";
-            const type = document.getElementById('visualType').value;
-            chartIdCounter++;
-            const canvasId = `chart-${chartIdCounter}`;
-
-            // Create widget HTML
-            const widgetHtml = `
-                <div>
-                    <div class="grid-stack-item-content">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="font-bold text-gray-600 text-xs uppercase">${name}</span>
-                            <button onclick="removeWidget(this)" class="text-red-400">✕</button>
-                        </div>
-                        <div style="position: relative; height: 140px; width: 100%;">
-                            <canvas id="${canvasId}"></canvas>
-                        </div>
-                    </div>
-                </div>`;
-
-            // Add to Grid
-            grid.addWidget({w: 4, h: 2, content: widgetHtml});
-
-            // Initialize Chart
-            setTimeout(() => {
-                const ctx = document.getElementById(canvasId).getContext('2d');
-                new Chart(ctx, {
-                    type: type,
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-                        datasets: [{
-                            label: name,
-                            data: [12, 19, 3, 5, 2],
-                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
-            }, 100);
-
-            document.getElementById('metricName').value = '';
-        }
-
-        function removeWidget(el) {
-            grid.removeWidget(el.closest('.grid-stack-item'));
-        }
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
