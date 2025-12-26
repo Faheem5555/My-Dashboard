@@ -1,3 +1,4 @@
+console.log("script loaded");
 const grid = GridStack.init({
   cellHeight: 120,
   draggable: { handle: '.grid-stack-item-content' }
