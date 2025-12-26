@@ -4,32 +4,56 @@
   <meta charset="UTF-8" />
   <title>Dashboard Builder</title>
 
-  <!-- Gridstack -->
-  <link href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css" rel="stylesheet"/>
+  <!-- Gridstack CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Gridstack JS -->
   <script src="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack-all.js"></script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicon (optional) -->
+  <!-- <link rel="icon" href="favicon.ico"> -->
 </head>
 <body>
 
-<h1>📊 Dashboard Builder</h1>
+  <!-- Page Title -->
+  <h1>📊 Dashboard Builder</h1>
 
-<div class="controls">
-  <input id="metricName" placeholder="Metric Name" />
-  <select id="chartType">
-    <option value="bar">Bar Chart</option>
-    <option value="line">Line Chart</option>
-    <option value="pie">Pie Chart</option>
-    <option value="kpi">KPI Card</option>
-  </select>
-  <button onclick="addWidget()">➕ Add to Dashboard</button>
-</div>
+  <!-- Controls -->
+  <div class="controls">
+    <input
+      type="text"
+      id="metricName"
+      placeholder="Metric Name (e.g. Total Revenue)"
+    />
 
-<div class="grid-stack"></div>
+    <select id="chartType">
+      <option value="bar">Bar Chart</option>
+      <option value="bar">Column Chart</option>
+      <option value="line">Line Chart</option>
+      <option value="line">Area Chart</option>
+      <option value="pie">Pie Chart</option>
+      <option value="doughnut">Doughnut Chart</option>
+      <option value="scatter">Scatter Plot</option>
+      <option value="kpi">KPI / Card</option>
+    </select>
 
-<script src="script.js"></script>
+    <button onclick="addWidget()">➕ Add to Dashboard</button>
+  </div>
+
+  <!-- Dashboard Canvas -->
+  <div class="grid-stack"></div>
+
+  <!-- Custom JS -->
+  <script src="script.js"></script>
+
 </body>
 </html>
