@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Dashboard Builder</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gridstack.js/10.0.1/gridstack.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gridstack.js/10.0.1/gridstack.all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .grid-stack { background: #f8fafc; min-height: 600px; border: 2px dashed #e2e8f0; border-radius: 12px; padding: 10px; }
+        .grid-stack-item-content { background: white; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; cursor: move; }
+    </style>
+</head>
+<body class="bg-slate-100 p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Dashboard Builder</h1>
+            <p class="text-slate-500">Create, drag, and resize your custom data visuals.</p>
+        </header>
+        
+        <div class="bg-white p-6 rounded-2xl shadow-sm mb-8 flex flex-wrap gap-6 items-end border border-slate-200">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Metric Name</label>
+                <input type="text" id="metricName" placeholder="e.g., Monthly Sales" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+            </div>
+            <div class="w-48">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Visual Type</label>
+                <select id="visualType" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="bar">Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
+            </div>
+            <button onclick="addWidget()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-blue-200 transition-all active:scale-95">
+                + Add to Dashboard
+            </button>
+        </div>
+
+        <div class="grid-stack"></div>
+    </div>
+
+    <script>
+        let grid;
+
+        // Ensure libraries are loaded before initializing
+        window.onload = function() {
+            if (typeof GridStack !== 'undefined') {
+                grid = GridStack.init({
+                    cellHeight: 80,
+                    margin: 10,
+                    animate: true,
+                    float: true
+                });
+                console.log("System Ready");
+            } else {
+                alert("Error: GridStack library failed to load. Please check your internet connection or use GitHub Pages.");
+            }
+        };
+
+        let chartCount = 0;
+
+        function addWidget() {
+            if (!grid) return alert("System not ready yet!");
+
+            const name = document.getElementById('metricName').value || 'New Metric';
+            const type = document.getElementById('visualType').value;
+            chartCount++;
+            const widgetId = `chart-${chartCount}`;
+
+            const el = {
+                w: 4, h: 4,
+                content: `
+                    <div class="grid-stack-item-content p-4 flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-4 border-b pb-2">
+                            <span class="font-bold text-slate-800">${name}</span>
+                            <button onclick="removeMe(this)" class="text-slate-400 hover:text-red-500 transition-colors">✕</button>
+                        </div>
+                        <div class="flex-grow relative">
+                            <canvas id="${widgetId}"></canvas>
+                        </div>
+                    </div>`
+            };
+
+            grid.addWidget(el);
+
+            // Create Chart
+            setTimeout(() => {
+                const ctx = document.getElementById(widgetId).getContext('2d');
+                new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                        datasets: [{
+                            label: name,
+                            data: Array.from({length: 5}, () => Math.floor(Math.random() * 100)),
+                            backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'],
+                            borderColor: type === 'line' ? '#3b82f6' : 'white',
+                            borderWidth: 2,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: type === 'pie' } }
+                    }
+                });
+            }, 50);
+
+            document.getElementById('metricName').value = '';
+        }
+
+        function removeMe(btn) {
+            grid.removeWidget(btn.closest('.grid-stack-item'));
+        }
+    </script>
+</body>
+</html>
