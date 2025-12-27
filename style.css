@@ -9,14 +9,14 @@ body {
 }
 
 h3 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 /* TOP BAR */
 .top-bar {
   display: flex;
   gap: 8px;
-  background: #fff;
+  background: #ffffff;
   padding: 8px;
   border-radius: 6px;
   margin-bottom: 10px;
@@ -27,12 +27,11 @@ h3 {
   padding: 6px;
 }
 
-.top-bar button,
-.image-btn {
+.top-bar button {
   background: #2563eb;
   color: #fff;
   border: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -43,7 +42,7 @@ h3 {
   gap: 12px;
 }
 
-/* FIXED POWER BI CANVAS */
+/* FIXED CANVAS */
 .canvas-wrapper {
   width: 1280px;
   height: 720px;
@@ -52,7 +51,6 @@ h3 {
   overflow: hidden;
 }
 
-/* GRID */
 .grid-stack {
   width: 100%;
   height: 100%;
@@ -60,21 +58,21 @@ h3 {
 
 /* FORMAT PANE */
 .format-pane {
-  width: 240px;              /* Power BI–like */
-  background: #fff;
+  width: 240px;
+  background: #ffffff;
   padding: 10px;
   border-radius: 6px;
 }
 
 .format-pane label {
   display: block;
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 13px;
 }
 
 /* VISUAL */
 .grid-stack-item-content {
-  background: transparent;   /* no forced background */
+  background: transparent;
   padding: 4px;
   height: 100%;
   position: relative;
@@ -90,11 +88,16 @@ h3 {
 }
 
 .delete {
+  display: none;
   position: absolute;
   top: 2px;
   right: 4px;
   cursor: pointer;
   color: #ef4444;
+}
+
+.grid-stack-item.selected .delete {
+  display: block;
 }
 
 canvas {
