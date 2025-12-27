@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard Prototype Builder</title>
+  <title>Dashboard Prototype – Power BI Style</title>
 
   <!-- Gridstack -->
   <link href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css" rel="stylesheet"/>
@@ -15,49 +15,77 @@
 </head>
 <body>
 
-<h1>📊 Dashboard Prototype (Sample Data)</h1>
+<h2>🟡 Prototype Dashboard – For Alignment Only</h2>
 
-<!-- TOP CONTROLS -->
 <div class="top-bar">
-  <input id="metricName" placeholder="Metric Name (e.g. Total Revenue)" />
+  <input id="metricName" placeholder="Metric name (e.g. Total Revenue)" />
 
   <select id="chartType">
-    <option value="kpi">KPI / Card</option>
-    <option value="bar">Bar / Column</option>
-    <option value="line">Line / Area</option>
-    <option value="pie">Pie</option>
-    <option value="doughnut">Doughnut</option>
-    <option value="scatter">Scatter</option>
+    <optgroup label="Cards">
+      <option value="card">Card</option>
+    </optgroup>
+
+    <optgroup label="Bar Charts">
+      <option value="bar-clustered">Clustered Bar</option>
+      <option value="bar-stacked">Stacked Bar</option>
+      <option value="bar-100">100% Stacked Bar</option>
+    </optgroup>
+
+    <optgroup label="Column Charts">
+      <option value="col-clustered">Clustered Column</option>
+      <option value="col-stacked">Stacked Column</option>
+      <option value="col-100">100% Stacked Column</option>
+    </optgroup>
+
+    <optgroup label="Line & Area">
+      <option value="line">Line</option>
+      <option value="area">Area</option>
+      <option value="area-stacked">Stacked Area</option>
+    </optgroup>
+
+    <optgroup label="Combination">
+      <option value="combo-line-col">Line & Column</option>
+    </optgroup>
+
+    <optgroup label="Other">
+      <option value="pie">Pie</option>
+      <option value="donut">Donut</option>
+      <option value="scatter">Scatter</option>
+      <option value="treemap">Treemap (Placeholder)</option>
+      <option value="funnel">Funnel (Placeholder)</option>
+      <option value="gauge">Gauge (Placeholder)</option>
+      <option value="map">Map (Placeholder)</option>
+    </optgroup>
   </select>
 
-  <button onclick="addWidget()">➕ Add Visual</button>
-  <label class="image-upload">
+  <button onclick="addVisual()">➕ Add Visual</button>
+
+  <label class="image-btn">
     🖼 Insert Image
-    <input type="file" accept="image/*" onchange="addImage(this)" hidden />
+    <input type="file" hidden accept="image/*" onchange="addImage(this)" />
   </label>
 </div>
 
 <div class="workspace">
-
-  <!-- CANVAS -->
   <div class="canvas-wrapper">
-    <div class="grid-stack powerbi-canvas"></div>
+    <div class="grid-stack"></div>
   </div>
 
-  <!-- FORMAT PANE -->
   <div class="format-pane">
-    <h3>Format</h3>
+    <h3>Format (Theme)</h3>
 
     <label>Visual Title Color</label>
-    <input type="color" onchange="formatTitle(this.value)" />
+    <input type="color" onchange="setTitleColor(this.value)" />
 
     <label>Visual Background</label>
-    <input type="color" onchange="formatBackground(this.value)" />
+    <input type="color" onchange="setVisualBg(this.value)" />
+
+    <label>Series Color</label>
+    <input type="color" onchange="setSeriesColor(this.value)" />
 
     <label>Dashboard Background</label>
-    <input type="color" onchange="formatDashboard(this.value)" />
+    <input type="color" onchange="setCanvasBg(this.value)" />
   </div>
-
 </div>
 
 <script src="script.js"></script>
