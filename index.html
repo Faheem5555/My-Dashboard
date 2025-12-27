@@ -2,77 +2,160 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Power BI Prototype Dashboard</title>
 
-  <!-- Gridstack -->
-  <link href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack-all.js"></script>
+  <link rel="stylesheet" href="style.css" />
 
   <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <link rel="stylesheet" href="style.css" />
+  <!-- Treemap plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@2.3.0/dist/chartjs-chart-treemap.min.js"></script>
 </head>
+
 <body>
+  <div class="app">
+    <!-- LEFT: Visuals pane -->
+    <aside class="leftPane">
+      <div class="paneHeader">
+        <div class="paneTitle">Visualizations</div>
+        <div class="paneSubtitle">Prototype-only (Power BI-like)</div>
+      </div>
 
-<h3>🟡 Dashboard Prototype (Power BI Style)</h3>
+      <div class="controlGroup">
+        <label class="label">Add visual</label>
 
-<div class="top-bar">
-  <input id="metricName" placeholder="Visual title" />
+        <select id="visualType" class="select">
+          <optgroup label="Basic">
+            <option value="pie">Pie Chart</option>
+            <option value="donut">Donut Chart</option>
+          </optgroup>
 
-  <select id="chartType">
-    <optgroup label="Bar Charts">
-      <option value="clustered-bar">Clustered Bar</option>
-      <option value="stacked-bar">Stacked Bar</option>
-      <option value="stacked-bar-100">100% Stacked Bar</option>
-    </optgroup>
+          <optgroup label="Line & Area">
+            <option value="line">Line Chart (multiple trends)</option>
+            <option value="area">Area Chart</option>
+            <option value="stackedArea">Stacked Area Chart</option>
+          </optgroup>
 
-    <optgroup label="Column Charts">
-      <option value="clustered-column">Clustered Column</option>
-      <option value="stacked-column">Stacked Column</option>
-      <option value="stacked-column-100">100% Stacked Column</option>
-    </optgroup>
+          <optgroup label="Bar & Column">
+            <option value="clusteredBar">Clustered Bar Chart</option>
+            <option value="stackedBar">Stacked Bar Chart</option>
+            <option value="stackedBar100">100% Stacked Bar Chart</option>
 
-    <optgroup label="Line & Area">
-      <option value="line-multi">Line (Multiple)</option>
-      <option value="area">Area</option>
-      <option value="stacked-area">Stacked Area</option>
-      <option value="ribbon">Ribbon</option>
-    </optgroup>
+            <option value="clusteredColumn">Clustered Column Chart</option>
+            <option value="stackedColumn">Stacked Column Chart</option>
+            <option value="stackedColumn100">100% Stacked Column Chart</option>
 
-    <optgroup label="Combination">
-      <option value="combo-clustered">Line & Clustered Column</option>
-      <option value="combo-stacked">Line & Stacked Column</option>
-    </optgroup>
+            <option value="lineClusteredColumn">Line & Clustered Column Chart</option>
+            <option value="lineStackedColumn">Line & Stacked Column Chart</option>
+          </optgroup>
 
-    <optgroup label="Part to Whole">
-      <option value="pie">Pie</option>
-      <option value="donut">Donut</option>
-      <option value="treemap">Treemap (Prototype)</option>
-    </optgroup>
+          <optgroup label="Other (Prototype visuals)">
+            <option value="treemap">Treemap (visual prototype)</option>
+            <option value="ribbon">Ribbon Chart (visual prototype)</option>
+            <option value="scatter">Scatter Chart</option>
+          </optgroup>
 
-    <optgroup label="Relationship">
-      <option value="scatter">Scatter</option>
-    </optgroup>
-  </select>
+          <optgroup label="Media">
+            <option value="image">Upload Image</option>
+          </optgroup>
+        </select>
 
-  <button onclick="addVisual()">➕ Add Visual</button>
-</div>
+        <button id="addVisualBtn" class="btnPrimary">Add</button>
+      </div>
 
-<div class="workspace">
-  <div class="canvas-wrapper">
-    <div class="grid-stack"></div>
+      <div class="hintBox">
+        <div class="hintTitle">Behaves like Power BI:</div>
+        <ul class="hintList">
+          <li>Fixed canvas 1280×720</li>
+          <li>Drag + resize visuals</li>
+          <li>Visuals can overlap</li>
+          <li>Format pane always visible</li>
+          <li>Per-series colors (multi-trend)</li>
+        </ul>
+      </div>
+
+      <div class="footerNote">
+        Prototype tool — dummy retail data only.
+      </div>
+    </aside>
+
+    <!-- CENTER: Canvas -->
+    <main class="centerPane">
+      <div class="canvasFrame">
+        <div class="canvasHeader">
+          <div class="canvasTitle">Report page</div>
+          <div class="canvasMeta">Fixed size (Power BI-like) • Overlap allowed • No infinite scroll</div>
+        </div>
+
+        <div id="canvas" class="canvas" aria-label="Power BI like canvas">
+          <!-- visuals are injected here -->
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT: Format pane (always visible) -->
+    <aside class="rightPane">
+      <div class="paneHeader">
+        <div class="paneTitle">Format</div>
+        <div id="formatStatus" class="paneSubtitle">Select a visual to format</div>
+      </div>
+
+      <div class="formatBody">
+        <div class="section">
+          <div class="sectionTitle">General</div>
+
+          <div class="field">
+            <label class="label">Title</label>
+            <input id="fmtTitle" class="input" type="text" placeholder="Visual title" disabled />
+          </div>
+
+          <div class="fieldRow">
+            <div class="field">
+              <label class="label">X</label>
+              <input id="fmtX" class="input" type="number" disabled />
+            </div>
+            <div class="field">
+              <label class="label">Y</label>
+              <input id="fmtY" class="input" type="number" disabled />
+            </div>
+          </div>
+
+          <div class="fieldRow">
+            <div class="field">
+              <label class="label">W</label>
+              <input id="fmtW" class="input" type="number" disabled />
+            </div>
+            <div class="field">
+              <label class="label">H</label>
+              <input id="fmtH" class="input" type="number" disabled />
+            </div>
+          </div>
+
+          <button id="bringFrontBtn" class="btnGhost" disabled>Bring to front</button>
+        </div>
+
+        <div class="section">
+          <div class="sectionTitle">Data colors</div>
+          <div id="seriesColors" class="seriesColors">
+            <div class="emptyState">No visual selected.</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="sectionTitle">Notes</div>
+          <div class="noteText">
+            This is a <b>visual prototype</b> tool for stakeholder alignment — not real analytics.
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 
-  <div class="format-pane">
-    <h4>Format – Trends</h4>
-    <div id="trendColors"></div>
+  <!-- Image upload input (hidden) -->
+  <input id="imageUpload" type="file" accept="image/*" style="display:none" />
 
-    <label>Dashboard Background</label>
-    <input type="color" onchange="setCanvasBg(this.value)">
-  </div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
