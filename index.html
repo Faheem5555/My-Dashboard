@@ -15,67 +15,62 @@
 </head>
 <body>
 
-<h3>🟡 Prototype Dashboard – Power BI Alignment</h3>
+<h3>🟡 Dashboard Prototype (Power BI Style)</h3>
 
 <div class="top-bar">
-  <input id="metricName" placeholder="Metric / Visual Title" />
+  <input id="metricName" placeholder="Visual title" />
 
   <select id="chartType">
-
     <optgroup label="Bar Charts">
-      <option value="bar-clustered">Clustered Bar Chart</option>
-      <option value="bar-stacked">Stacked Bar Chart</option>
-      <option value="bar-100">100% Stacked Bar Chart</option>
+      <option value="clustered-bar">Clustered Bar</option>
+      <option value="stacked-bar">Stacked Bar</option>
+      <option value="stacked-bar-100">100% Stacked Bar</option>
     </optgroup>
 
     <optgroup label="Column Charts">
-      <option value="col-clustered">Clustered Column Chart</option>
-      <option value="col-stacked">Stacked Column Chart</option>
-      <option value="col-100">100% Stacked Column Chart</option>
+      <option value="clustered-column">Clustered Column</option>
+      <option value="stacked-column">Stacked Column</option>
+      <option value="stacked-column-100">100% Stacked Column</option>
     </optgroup>
 
     <optgroup label="Line & Area">
-      <option value="line-multi">Line Chart (Multiple)</option>
-      <option value="area">Area Chart</option>
-      <option value="area-stacked">Stacked Area Chart</option>
-      <option value="ribbon">Ribbon Chart (Prototype)</option>
+      <option value="line-multi">Line (Multiple)</option>
+      <option value="area">Area</option>
+      <option value="stacked-area">Stacked Area</option>
+      <option value="ribbon">Ribbon</option>
     </optgroup>
 
     <optgroup label="Combination">
-      <option value="combo-line-col">Line & Clustered Column Chart</option>
-      <option value="combo-line-col-stacked">Line & Stacked Column Chart</option>
+      <option value="combo-clustered">Line & Clustered Column</option>
+      <option value="combo-stacked">Line & Stacked Column</option>
     </optgroup>
 
     <optgroup label="Part to Whole">
-      <option value="pie">Pie Chart</option>
-      <option value="donut">Donut Chart</option>
+      <option value="pie">Pie</option>
+      <option value="donut">Donut</option>
       <option value="treemap">Treemap (Prototype)</option>
     </optgroup>
 
     <optgroup label="Relationship">
-      <option value="scatter">Scatter Chart</option>
+      <option value="scatter">Scatter</option>
     </optgroup>
-
   </select>
 
   <button onclick="addVisual()">➕ Add Visual</button>
 </div>
 
 <div class="workspace">
-
   <div class="canvas-wrapper">
     <div class="grid-stack"></div>
   </div>
 
   <div class="format-pane">
     <h4>Format – Trends</h4>
-
     <div id="trendColors"></div>
 
     <label>Dashboard Background</label>
-    <input type="color" onchange="setCanvasBg(this.value)" />
+    <input type="color" onchange="setCanvasBg(this.value)">
   </div>
-
 </div>
 
 <script src="script.js"></script>
