@@ -1,113 +1,99 @@
-console.log("script loaded");
+let selected = null;
+let charts = {};
 
-let selectedWidget = null;
-
-/* GRID INIT – Power BI Behavior */
 const grid = GridStack.init({
-  float: true,                // absolute positioning
+  float: true,
   cellHeight: 10,
-  margin: 5,
-  disableOneColumnMode: true,
-  resizable: true
+  disableOneColumnMode: true
 });
 
-/* SELECT VISUAL */
-document.addEventListener("click", (e) => {
-  const widget = e.target.closest(".grid-stack-item");
-  document.querySelectorAll(".grid-stack-item").forEach(w =>
-    w.classList.remove("selected")
-  );
-  if (widget) {
-    widget.classList.add("selected");
-    selectedWidget = widget;
+/* SELECT */
+document.addEventListener("click", e => {
+  const item = e.target.closest(".grid-stack-item");
+  document.querySelectorAll(".grid-stack-item").forEach(i => i.classList.remove("selected"));
+  if (item) {
+    item.classList.add("selected");
+    selected = item;
   }
 });
 
 /* ADD VISUAL */
-let idCounter = 0;
-function addWidget() {
+let id = 0;
+function addVisual() {
   const name = metricName.value;
   const type = chartType.value;
-  if (!name) return alert("Enter metric name");
+  if (!name) return alert("Metric name required");
 
-  const id = `chart-${idCounter++}`;
+  const vid = `v${id++}`;
 
-  grid.addWidget({
-    x: 0,
-    y: 0,
-    w: 30,
-    h: 20,
-    content: `
-      <div class="grid-stack-item-content">
-        <span class="delete-btn" onclick="removeWidget(this)">✖</span>
-        <h4>${name}</h4>
-        ${type === "kpi" ? `<div class="kpi">₹ 1,23,000</div>` : `<canvas id="${id}"></canvas>`}
-      </div>
-    `
-  });
+  const html = `
+    <div class="grid-stack-item-content">
+      <span class="delete" onclick="grid.removeWidget(this.closest('.grid-stack-item'))">✖</span>
+      <div class="visual-title">${name}</div>
+      ${type === "card"
+        ? `<div class="card">₹ 1,23,000</div>`
+        : `<canvas id="${vid}"></canvas>`}
+    </div>
+  `;
 
-  if (type !== "kpi") setTimeout(() => renderChart(id, type), 50);
+  grid.addWidget({ x:0, y:0, w:30, h:20, content: html });
+
+  if (type !== "card") setTimeout(() => renderChart(vid, type), 30);
   metricName.value = "";
-}
-
-/* REMOVE */
-function removeWidget(el) {
-  grid.removeWidget(el.closest(".grid-stack-item"));
 }
 
 /* IMAGE */
 function addImage(input) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = e => {
+  const f = input.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
     grid.addWidget({
-      x: 0,
-      y: 0,
-      w: 30,
-      h: 20,
+      x:0,y:0,w:30,h:20,
       content: `
         <div class="grid-stack-item-content">
-          <span class="delete-btn" onclick="removeWidget(this)">✖</span>
+          <span class="delete" onclick="grid.removeWidget(this.closest('.grid-stack-item'))">✖</span>
           <img src="${e.target.result}" style="width:100%;height:100%;object-fit:contain">
-        </div>
-      `
+        </div>`
     });
   };
-  reader.readAsDataURL(file);
+  r.readAsDataURL(f);
 }
 
 /* FORMAT */
-function formatTitle(color) {
-  if (!selectedWidget) return;
-  selectedWidget.querySelector("h4").style.color = color;
-}
-
-function formatBackground(color) {
-  if (!selectedWidget) return;
-  selectedWidget.querySelector(".grid-stack-item-content").style.background = color;
-}
-
-function formatDashboard(color) {
-  document.querySelector(".canvas-wrapper").style.background = color;
+function setTitleColor(c){ if(selected) selected.querySelector(".visual-title").style.color=c; }
+function setVisualBg(c){ if(selected) selected.querySelector(".grid-stack-item-content").style.background=c; }
+function setCanvasBg(c){ document.querySelector(".canvas-wrapper").style.background=c; }
+function setSeriesColor(c){
+  if (!selected) return;
+  const canvas = selected.querySelector("canvas");
+  if (!canvas) return;
+  const chart = charts[canvas.id];
+  chart.data.datasets.forEach(d => d.backgroundColor = c);
+  chart.update();
 }
 
 /* CHARTS */
 function renderChart(id, type) {
   const ctx = document.getElementById(id);
-  if (!ctx) return;
+  const labels = ["Jan","Feb","Mar","Apr"];
 
-  const data = type === "scatter"
-    ? { datasets: [{ data: [{x:5,y:10},{x:10,y:20},{x:15,y:15}] }] }
-    : {
-        labels: ["Jan","Feb","Mar","Apr"],
-        datasets: [{ data: [10,20,15,30], fill: type === "line" }]
-      };
+  let cfg = {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{ data: [10,20,15,30], backgroundColor:"#60a5fa" }]
+    },
+    options: { responsive:true, maintainAspectRatio:false }
+  };
 
-  new Chart(ctx, {
-    type: type === "scatter" ? "scatter" : type,
-    data,
-    options: { responsive: true, maintainAspectRatio: false }
-  });
+  if (type.includes("line")) cfg.type = "line";
+  if (type === "area") cfg.data.datasets[0].fill = true;
+  if (type === "pie" || type === "donut") cfg.type = type === "donut" ? "doughnut" : "pie";
+  if (type === "scatter") {
+    cfg.type = "scatter";
+    cfg.data = { datasets:[{data:[{x:5,y:10},{x:10,y:20}]}] };
+  }
+
+  charts[id] = new Chart(ctx, cfg);
 }
