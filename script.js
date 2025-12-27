@@ -1,99 +1,233 @@
-let selected = null;
-let charts = {};
+/* ================================
+   Dashboard Prototype – script.js
+   Power BI–style behavior
+================================ */
 
+console.log("script loaded");
+
+/* -------------------------------
+   GLOBAL STATE
+-------------------------------- */
+let selectedVisual = null;
+let charts = {};
+let visualCounter = 0;
+
+/* -------------------------------
+   GRID INITIALIZATION
+   (Fixed canvas, no auto reflow)
+-------------------------------- */
 const grid = GridStack.init({
-  float: true,
+  float: true,                 // absolute positioning (no jumping)
   cellHeight: 10,
-  disableOneColumnMode: true
+  margin: 5,
+  disableOneColumnMode: true,
+  resizable: true
 });
 
-/* SELECT */
-document.addEventListener("click", e => {
-  const item = e.target.closest(".grid-stack-item");
-  document.querySelectorAll(".grid-stack-item").forEach(i => i.classList.remove("selected"));
-  if (item) {
-    item.classList.add("selected");
-    selected = item;
+/* -------------------------------
+   VISUAL SELECTION
+-------------------------------- */
+document.addEventListener("click", (e) => {
+  const visual = e.target.closest(".grid-stack-item");
+
+  document
+    .querySelectorAll(".grid-stack-item")
+    .forEach(v => v.classList.remove("selected"));
+
+  if (visual) {
+    visual.classList.add("selected");
+    selectedVisual = visual;
+  } else {
+    selectedVisual = null;
   }
 });
 
-/* ADD VISUAL */
-let id = 0;
+/* -------------------------------
+   ADD VISUAL
+-------------------------------- */
 function addVisual() {
-  const name = metricName.value;
-  const type = chartType.value;
-  if (!name) return alert("Metric name required");
+  const metricInput = document.getElementById("metricName");
+  const chartSelect = document.getElementById("chartType");
 
-  const vid = `v${id++}`;
+  const metricName = metricInput.value.trim();
+  const chartType = chartSelect.value;
 
-  const html = `
+  if (!metricName) {
+    alert("Please enter a metric name");
+    return;
+  }
+
+  const chartId = `chart_${visualCounter++}`;
+
+  const content = `
     <div class="grid-stack-item-content">
-      <span class="delete" onclick="grid.removeWidget(this.closest('.grid-stack-item'))">✖</span>
-      <div class="visual-title">${name}</div>
-      ${type === "card"
-        ? `<div class="card">₹ 1,23,000</div>`
-        : `<canvas id="${vid}"></canvas>`}
+      <span class="delete" onclick="removeVisual(this)">✖</span>
+      <div class="visual-title">${metricName}</div>
+      ${
+        chartType === "card"
+          ? `<div class="card">₹ 1,23,000</div>`
+          : `<canvas id="${chartId}"></canvas>`
+      }
     </div>
   `;
 
-  grid.addWidget({ x:0, y:0, w:30, h:20, content: html });
+  grid.addWidget({
+    x: 0,
+    y: 0,
+    w: 30,
+    h: 20,
+    content: content
+  });
 
-  if (type !== "card") setTimeout(() => renderChart(vid, type), 30);
-  metricName.value = "";
+  if (chartType !== "card") {
+    setTimeout(() => renderChart(chartId, chartType), 50);
+  }
+
+  metricInput.value = "";
 }
 
-/* IMAGE */
+/* -------------------------------
+   REMOVE VISUAL
+-------------------------------- */
+function removeVisual(el) {
+  const item = el.closest(".grid-stack-item");
+  if (item) {
+    grid.removeWidget(item);
+  }
+}
+
+/* -------------------------------
+   IMAGE VISUAL
+-------------------------------- */
 function addImage(input) {
-  const f = input.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = e => {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
     grid.addWidget({
-      x:0,y:0,w:30,h:20,
+      x: 0,
+      y: 0,
+      w: 30,
+      h: 20,
       content: `
         <div class="grid-stack-item-content">
-          <span class="delete" onclick="grid.removeWidget(this.closest('.grid-stack-item'))">✖</span>
-          <img src="${e.target.result}" style="width:100%;height:100%;object-fit:contain">
-        </div>`
+          <span class="delete" onclick="removeVisual(this)">✖</span>
+          <img src="${e.target.result}"
+               style="width:100%; height:100%; object-fit:contain;" />
+        </div>
+      `
     });
   };
-  r.readAsDataURL(f);
+
+  reader.readAsDataURL(file);
 }
 
-/* FORMAT */
-function setTitleColor(c){ if(selected) selected.querySelector(".visual-title").style.color=c; }
-function setVisualBg(c){ if(selected) selected.querySelector(".grid-stack-item-content").style.background=c; }
-function setCanvasBg(c){ document.querySelector(".canvas-wrapper").style.background=c; }
-function setSeriesColor(c){
-  if (!selected) return;
-  const canvas = selected.querySelector("canvas");
+/* -------------------------------
+   FORMAT FUNCTIONS (THEME LEVEL)
+-------------------------------- */
+function setTitleColor(color) {
+  if (!selectedVisual) return;
+  const title = selectedVisual.querySelector(".visual-title");
+  if (title) title.style.color = color;
+}
+
+function setVisualBg(color) {
+  if (!selectedVisual) return;
+  const content = selectedVisual.querySelector(".grid-stack-item-content");
+  if (content) content.style.background = color;
+}
+
+function setCanvasBg(color) {
+  const canvas = document.querySelector(".canvas-wrapper");
+  if (canvas) canvas.style.background = color;
+}
+
+function setSeriesColor(color) {
+  if (!selectedVisual) return;
+  const canvas = selectedVisual.querySelector("canvas");
   if (!canvas) return;
+
   const chart = charts[canvas.id];
-  chart.data.datasets.forEach(d => d.backgroundColor = c);
+  if (!chart) return;
+
+  chart.data.datasets.forEach(ds => {
+    ds.backgroundColor = color;
+    ds.borderColor = color;
+  });
   chart.update();
 }
 
-/* CHARTS */
+/* -------------------------------
+   CHART RENDERING
+   (Prototype-level only)
+-------------------------------- */
 function renderChart(id, type) {
   const ctx = document.getElementById(id);
-  const labels = ["Jan","Feb","Mar","Apr"];
+  if (!ctx) return;
 
-  let cfg = {
+  let config = {
     type: "bar",
     data: {
-      labels,
-      datasets: [{ data: [10,20,15,30], backgroundColor:"#60a5fa" }]
+      labels: ["Jan", "Feb", "Mar", "Apr"],
+      datasets: [{
+        label: "Value",
+        data: [10, 20, 15, 30],
+        backgroundColor: "#60a5fa",
+        borderColor: "#60a5fa"
+      }]
     },
-    options: { responsive:true, maintainAspectRatio:false }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
   };
 
-  if (type.includes("line")) cfg.type = "line";
-  if (type === "area") cfg.data.datasets[0].fill = true;
-  if (type === "pie" || type === "donut") cfg.type = type === "donut" ? "doughnut" : "pie";
-  if (type === "scatter") {
-    cfg.type = "scatter";
-    cfg.data = { datasets:[{data:[{x:5,y:10},{x:10,y:20}]}] };
+  /* Chart Type Mapping (Power BI–style intent) */
+  if (type.includes("line")) {
+    config.type = "line";
+    config.data.datasets[0].fill = false;
   }
 
-  charts[id] = new Chart(ctx, cfg);
+  if (type === "area") {
+    config.type = "line";
+    config.data.datasets[0].fill = true;
+  }
+
+  if (type === "pie") {
+    config.type = "pie";
+  }
+
+  if (type === "donut") {
+    config.type = "doughnut";
+  }
+
+  if (type === "scatter") {
+    config.type = "scatter";
+    config.data = {
+      datasets: [{
+        data: [
+          { x: 5, y: 10 },
+          { x: 10, y: 20 },
+          { x: 15, y: 15 },
+          { x: 20, y: 30 }
+        ],
+        backgroundColor: "#60a5fa"
+      }]
+    };
+  }
+
+  charts[id] = new Chart(ctx, config);
 }
+
+/* -------------------------------
+   EXPOSE FUNCTIONS TO HTML
+   (Fixes addVisual not defined)
+-------------------------------- */
+window.addVisual = addVisual;
+window.addImage = addImage;
+window.setTitleColor = setTitleColor;
+window.setVisualBg = setVisualBg;
+window.setCanvasBg = setCanvasBg;
+window.setSeriesColor = setSeriesColor;
+window.removeVisual = removeVisual;
