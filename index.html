@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Power BI Dashboard Prototype</title>
+  <title>Power BI Prototype Dashboard</title>
 
   <!-- Gridstack -->
   <link href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css" rel="stylesheet"/>
@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<h3>🟡 Prototype Dashboard – For Client Alignment Only</h3>
+<h3>🟡 Prototype Dashboard – Client Alignment Only - by Faheem</h3>
 
 <div class="top-bar">
   <input id="metricName" placeholder="Metric name (e.g. Revenue)" />
@@ -34,60 +34,41 @@
     <optgroup label="Column Charts">
       <option value="col-clustered">Clustered Column</option>
       <option value="col-stacked">Stacked Column</option>
-      <option value="col-100">100% Stacked Column</option>
     </optgroup>
 
     <optgroup label="Line & Area">
       <option value="line">Line</option>
       <option value="area">Area</option>
-      <option value="area-stacked">Stacked Area</option>
     </optgroup>
 
-    <optgroup label="Combination">
-      <option value="combo-line-col">Line & Column</option>
-    </optgroup>
-
-    <optgroup label="Others">
+    <optgroup label="Distribution">
       <option value="pie">Pie</option>
       <option value="donut">Donut</option>
-      <option value="scatter">Scatter</option>
     </optgroup>
   </select>
 
   <button onclick="addVisual()">➕ Add Visual</button>
-
-  <label class="image-btn">
-    🖼 Insert Image
-    <input type="file" hidden accept="image/*" onchange="addImage(this)">
-  </label>
 </div>
 
 <div class="workspace">
-
-  <!-- FIXED POWER BI–LIKE CANVAS -->
   <div class="canvas-wrapper">
     <div class="grid-stack"></div>
   </div>
 
-  <!-- FORMAT PANE (FIXED WIDTH) -->
   <div class="format-pane">
-    <h4>Format (Theme)</h4>
+    <h4>Format</h4>
 
     <label>Title Color</label>
-    <input type="color" onchange="setTitleColor(this.value)">
-
-    <label>Visual Background</label>
-    <input type="color" onchange="setVisualBg(this.value)">
+    <input type="color" onchange="setTitleColor(this.value)" />
 
     <label>Series Colors</label>
-    <input type="color" onchange="updatePalette(0,this.value)">
-    <input type="color" onchange="updatePalette(1,this.value)">
-    <input type="color" onchange="updatePalette(2,this.value)">
+    <input type="color" onchange="updatePalette(0,this.value)" />
+    <input type="color" onchange="updatePalette(1,this.value)" />
+    <input type="color" onchange="updatePalette(2,this.value)" />
 
     <label>Dashboard Background</label>
-    <input type="color" onchange="setCanvasBg(this.value)">
+    <input type="color" onchange="setCanvasBg(this.value)" />
   </div>
-
 </div>
 
 <script src="script.js"></script>
