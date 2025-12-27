@@ -8,8 +8,8 @@ const COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#f87171"];
 const grid = GridStack.init({
   cellHeight: 10,
   margin: 0,
-  allowOverlap: true,
-  float: false,
+  allowOverlap: true,        // visuals can overlap
+  float: false,              // no auto pushing
   disableOneColumnMode: true,
   resizable: true
 });
@@ -23,7 +23,7 @@ document.addEventListener("click", e => {
   loadFormatPane();
 });
 
-/* Add visual */
+/* Add visual – DEFAULT SIZE (Power BI-like) */
 function addVisual() {
   const title = metricName.value || "Visual";
   const type = chartType.value;
@@ -32,8 +32,8 @@ function addVisual() {
   grid.addWidget({
     x: 0,
     y: 0,
-    w: 6,
-    h: 6,
+    w: 5,   // ✅ default width (matches your screenshot)
+    h: 5,   // ✅ default height
     content: `
       <div class="grid-stack-item-content">
         <span class="delete" onclick="grid.removeWidget(this.closest('.grid-stack-item'))">✖</span>
@@ -45,7 +45,7 @@ function addVisual() {
   setTimeout(() => renderChart(id, type), 30);
 }
 
-/* Chart renderer */
+/* Chart factory */
 function renderChart(id, type) {
   const ctx = document.getElementById(id);
   const labels = ["Jan","Feb","Mar","Apr"];
@@ -62,6 +62,7 @@ function renderChart(id, type) {
   let cfg = { type:"bar", data:{}, options:{ responsive:true, maintainAspectRatio:false } };
 
   switch(type) {
+
     case "clustered-bar":
       cfg.options.indexAxis="y";
       cfg.data={labels,datasets:multi(["A"])};
@@ -186,7 +187,7 @@ function loadFormatPane() {
   });
 }
 
-/* Update color */
+/* Update trend color */
 function updateTrendColor(i,color){
   if(!selected) return;
   const canvas = selected.querySelector("canvas");
