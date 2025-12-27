@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard Prototype – Power BI Style</title>
+  <title>Power BI Dashboard Prototype</title>
 
   <!-- Gridstack -->
   <link href="https://cdn.jsdelivr.net/npm/gridstack@8.4.0/dist/gridstack.min.css" rel="stylesheet"/>
@@ -15,10 +15,10 @@
 </head>
 <body>
 
-<h2>🟡 Prototype Dashboard – For Alignment Only</h2>
+<h3>🟡 Prototype Dashboard – For Client Alignment Only</h3>
 
 <div class="top-bar">
-  <input id="metricName" placeholder="Metric name (e.g. Total Revenue)" />
+  <input id="metricName" placeholder="Metric name (e.g. Revenue)" />
 
   <select id="chartType">
     <optgroup label="Cards">
@@ -47,14 +47,10 @@
       <option value="combo-line-col">Line & Column</option>
     </optgroup>
 
-    <optgroup label="Other">
+    <optgroup label="Others">
       <option value="pie">Pie</option>
       <option value="donut">Donut</option>
       <option value="scatter">Scatter</option>
-      <option value="treemap">Treemap (Placeholder)</option>
-      <option value="funnel">Funnel (Placeholder)</option>
-      <option value="gauge">Gauge (Placeholder)</option>
-      <option value="map">Map (Placeholder)</option>
     </optgroup>
   </select>
 
@@ -62,30 +58,36 @@
 
   <label class="image-btn">
     🖼 Insert Image
-    <input type="file" hidden accept="image/*" onchange="addImage(this)" />
+    <input type="file" hidden accept="image/*" onchange="addImage(this)">
   </label>
 </div>
 
 <div class="workspace">
+
+  <!-- FIXED POWER BI–LIKE CANVAS -->
   <div class="canvas-wrapper">
     <div class="grid-stack"></div>
   </div>
 
+  <!-- FORMAT PANE (FIXED WIDTH) -->
   <div class="format-pane">
-    <h3>Format (Theme)</h3>
+    <h4>Format (Theme)</h4>
 
-    <label>Visual Title Color</label>
-    <input type="color" onchange="setTitleColor(this.value)" />
+    <label>Title Color</label>
+    <input type="color" onchange="setTitleColor(this.value)">
 
     <label>Visual Background</label>
-    <input type="color" onchange="setVisualBg(this.value)" />
+    <input type="color" onchange="setVisualBg(this.value)">
 
-    <label>Series Color</label>
-    <input type="color" onchange="setSeriesColor(this.value)" />
+    <label>Series Colors</label>
+    <input type="color" onchange="updatePalette(0,this.value)">
+    <input type="color" onchange="updatePalette(1,this.value)">
+    <input type="color" onchange="updatePalette(2,this.value)">
 
     <label>Dashboard Background</label>
-    <input type="color" onchange="setCanvasBg(this.value)" />
+    <input type="color" onchange="setCanvasBg(this.value)">
   </div>
+
 </div>
 
 <script src="script.js"></script>
