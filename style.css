@@ -1,121 +1,126 @@
-/* ===============================
-   GLOBAL RESET & BASE
-================================ */
+/* RESET */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background: #f3f4f6;
+  padding: 16px;
   color: #111827;
-  padding: 20px;
 }
 
-/* ===============================
-   PAGE TITLE
-================================ */
 h1 {
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
-/* ===============================
-   CONTROLS BAR
-================================ */
-.controls {
+/* TOP BAR */
+.top-bar {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  gap: 10px;
   background: #ffffff;
-  padding: 14px;
+  padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  margin-bottom: 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-.controls input,
-.controls select {
-  padding: 10px 12px;
+.top-bar input,
+.top-bar select {
+  padding: 8px 10px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-size: 14px;
-  min-width: 200px;
 }
 
-.controls input:focus,
-.controls select:focus {
-  outline: none;
-  border-color: #2563eb;
-}
-
-/* Add Button */
-.controls button {
+.top-bar button,
+.image-upload {
   background: #2563eb;
-  color: #ffffff;
-  padding: 10px 16px;
+  color: white;
   border: none;
+  padding: 8px 14px;
   border-radius: 6px;
-  font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s ease;
 }
 
-.controls button:hover {
-  background: #1e40af;
+/* WORKSPACE */
+.workspace {
+  display: flex;
+  gap: 16px;
 }
 
-/* ===============================
-   DASHBOARD GRID
-================================ */
-.grid-stack {
-  background: #e5e7eb;
-  min-height: 600px;
-  border-radius: 8px;
-  padding: 10px;
-}
-
-/* ===============================
-   DASHBOARD WIDGET
-================================ */
-.grid-stack-item-content {
+/* CANVAS */
+.canvas-wrapper {
+  width: 1280px;
+  height: 720px;
   background: #ffffff;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-  height: 100%;
-  position: relative;
+  border: 1px solid #d1d5db;
   overflow: hidden;
-  cursor: move;
 }
 
-/* Widget Title */
-.grid-stack-item-content h4 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #1f2937;
+.powerbi-canvas {
+  width: 100%;
+  height: 100%;
 }
 
-/* KPI Value */
-.kpi-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: #2563eb;
+/* FORMAT PANE */
+.format-pane {
+  width: 240px;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.format-pane h3 {
+  margin-bottom: 10px;
+}
+
+.format-pane label {
+  display: block;
+  font-size: 13px;
   margin-top: 12px;
 }
 
-/* ===============================
-   DELETE (CROSS) BUTTON
-================================ */
+.format-pane input[type="color"] {
+  width: 100%;
+  height: 34px;
+  border: none;
+}
+
+/* GRID ITEMS */
+.grid-stack-item-content {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 10px;
+  height: 100%;
+  position: relative;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+}
+
+.grid-stack-item.selected {
+  outline: 2px solid #2563eb;
+}
+
+/* TITLE */
+.grid-stack-item-content h4 {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* KPI */
+.kpi {
+  font-size: 30px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+/* DELETE */
 .delete-btn {
   position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 14px;
+  top: 6px;
+  right: 8px;
   color: #ef4444;
   cursor: pointer;
   display: none;
@@ -125,18 +130,7 @@ h1 {
   display: block;
 }
 
-/* ===============================
-   CANVAS FIX
-================================ */
 canvas {
   width: 100% !important;
-  height: calc(100% - 40px) !important;
-}
-
-/* ===============================
-   GRID PLACEHOLDER
-================================ */
-.grid-stack-placeholder > .placeholder-content {
-  background: rgba(37, 99, 235, 0.15);
-  border-radius: 8px;
+  height: calc(100% - 30px) !important;
 }
