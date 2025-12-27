@@ -1,103 +1,309 @@
-* {
-  box-sizing: border-box;
-  font-family: Segoe UI, Arial, sans-serif;
+/* =========================
+   POWER BI-LIKE PROTOTYPE UI
+========================= */
+
+:root{
+  --bg: #0f1115;
+  --panel: #141821;
+  --panel2: #10131a;
+  --border: #262b36;
+  --muted: #9aa4b2;
+  --text: #e8ecf2;
+  --accent: #3b82f6;
+
+  --canvasW: 1280px;
+  --canvasH: 720px;
 }
 
-body {
-  background: #f3f4f6;
-  padding: 12px;
+*{ box-sizing: border-box; }
+html, body { height: 100%; }
+body{
+  margin:0;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
-h3 {
-  margin-bottom: 8px;
+.app{
+  display:grid;
+  grid-template-columns: 280px 1fr 320px;
+  height: 100vh;
+  gap: 0;
 }
 
-.top-bar {
-  display: flex;
-  gap: 8px;
-  background: #ffffff;
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-
-.top-bar input,
-.top-bar select {
-  padding: 6px;
-}
-
-.top-bar button {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.workspace {
-  display: flex;
-  gap: 12px;
-}
-
-/* Power BI canvas */
-.canvas-wrapper {
-  width: 1280px;
-  height: 720px;
-  background: #ffffff;
-  border: 1px solid #c8c8c8;
+/* panes */
+.leftPane, .rightPane{
+  background: linear-gradient(180deg, var(--panel), var(--panel2));
+  border-right: 1px solid var(--border);
   overflow: hidden;
+  display:flex;
+  flex-direction: column;
+}
+.rightPane{
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+.centerPane{
+  overflow:auto;
+  padding: 18px 18px 24px 18px;
 }
 
-.grid-stack {
+/* headers */
+.paneHeader{
+  padding: 14px 14px 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.paneTitle{
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+.paneSubtitle{
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* controls */
+.controlGroup{
+  padding: 14px;
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.label{
+  font-size: 12px;
+  color: var(--muted);
+}
+.select, .input{
   width: 100%;
-  height: 100%;
+  padding: 10px 10px;
+  background: #0c0f15;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  outline: none;
 }
-
-.format-pane {
-  width: 260px;
-  background: #ffffff;
-  padding: 10px;
-  border-radius: 6px;
+.input:disabled, .select:disabled{
+  opacity: .65;
 }
+.btnPrimary{
+  width:100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  cursor:pointer;
+}
+.btnPrimary:hover{ filter: brightness(1.05); }
 
-.grid-stack-item-content {
+.btnGhost{
+  width:100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
   background: transparent;
-  padding: 4px;
-  height: 100%;
+  color: var(--text);
+  cursor:pointer;
+}
+.btnGhost:disabled{ opacity: .5; cursor:not-allowed; }
+
+.hintBox{
+  margin: 0 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(0,0,0,.25);
+}
+.hintTitle{ font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+.hintList{
+  margin:0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.footerNote{
+  margin-top:auto;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* canvas frame */
+.canvasFrame{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.canvasHeader{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.canvasTitle{ font-size: 16px; font-weight: 800; }
+.canvasMeta{ color: var(--muted); font-size: 12px; }
+
+.canvas{
+  width: var(--canvasW);
+  height: var(--canvasH);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden; /* IMPORTANT: no infinite scroll */
+}
+
+/* Visual container - Power BI like (flat, clean, no card shadows) */
+.visual{
+  position:absolute;
+  background: #ffffff;
+  border: 1px solid #d7dde6;
+  border-radius: 2px;
+  overflow: hidden;
+  user-select: none;
+}
+.visual.selected{
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-color: transparent;
+}
+
+/* header bar inside visual */
+.visualHeader{
+  height: 30px;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  background: #ffffff;
+  border-bottom: 1px solid #e6ebf2;
+  cursor: move; /* drag handle */
+}
+.visualTitle{
+  font-size: 12px;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 34px);
+}
+.visualDelete{
+  display:none; /* only when selected */
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid #d7dde6;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+  line-height: 18px;
+}
+.visual.selected .visualDelete{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.visualBody{
+  width: 100%;
+  height: calc(100% - 30px);
   position: relative;
 }
 
-.grid-stack-item.selected {
-  outline: 2px solid #2563eb;
-}
-
-.visual-title {
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.delete {
-  display: none;
-  position: absolute;
-  top: 2px;
-  right: 4px;
-  cursor: pointer;
-  color: #ef4444;
-}
-
-.grid-stack-item.selected .delete {
-  display: block;
-}
-
-canvas {
+/* chart canvas fills body */
+.visualBody canvas{
   width: 100% !important;
-  height: calc(100% - 22px) !important;
+  height: 100% !important;
 }
 
-.trend-color {
-  display: flex;
+/* Prototype ribbon uses SVG */
+.ribbonSvg{
+  width: 100%;
+  height: 100%;
+  display:block;
+  background: #fff;
+}
+
+/* Resize handles */
+.resizeHandle{
+  position:absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border: 1px solid #ffffff;
+  border-radius: 2px;
+  display:none;
+}
+.visual.selected .resizeHandle{ display:block; }
+.h-se{ right: -5px; bottom: -5px; cursor: se-resize; }
+.h-sw{ left: -5px; bottom: -5px; cursor: sw-resize; }
+.h-ne{ right: -5px; top: 25px; cursor: ne-resize; } /* below header */
+.h-nw{ left: -5px; top: 25px; cursor: nw-resize; }
+
+/* Format pane */
+.formatBody{
+  padding: 14px;
+  overflow:auto;
+}
+.section{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: rgba(0,0,0,.18);
+}
+.sectionTitle{
+  font-weight: 800;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.field{ display:flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.fieldRow{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.seriesColors{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.seriesRow{
+  display:flex;
+  align-items:center;
   justify-content: space-between;
-  margin-top: 6px;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0,0,0,.22);
+}
+.seriesName{
+  color: var(--text);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.colorInput{
+  width: 44px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  padding: 0;
+}
+.emptyState{
+  color: var(--muted);
+  font-size: 13px;
+  padding: 8px 2px;
+}
+.noteText{
+  color: var(--muted);
   font-size: 12px;
+  line-height: 1.5;
 }
