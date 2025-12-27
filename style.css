@@ -12,7 +12,6 @@ h3 {
   margin-bottom: 8px;
 }
 
-/* Top bar */
 .top-bar {
   display: flex;
   gap: 8px;
@@ -36,13 +35,11 @@ h3 {
   cursor: pointer;
 }
 
-/* Workspace */
 .workspace {
   display: flex;
   gap: 12px;
 }
 
-/* Fixed Power BI canvas */
 .canvas-wrapper {
   width: 1280px;
   height: 720px;
@@ -56,21 +53,13 @@ h3 {
   height: 100%;
 }
 
-/* Format pane */
 .format-pane {
-  width: 240px;
+  width: 260px;
   background: #ffffff;
   padding: 10px;
   border-radius: 6px;
 }
 
-.format-pane label {
-  display: block;
-  margin-top: 10px;
-  font-size: 13px;
-}
-
-/* Visual container */
 .grid-stack-item-content {
   background: transparent;
   padding: 4px;
@@ -87,7 +76,6 @@ h3 {
   margin-bottom: 4px;
 }
 
-/* Delete icon only on selection */
 .delete {
   display: none;
   position: absolute;
@@ -103,13 +91,12 @@ h3 {
 
 canvas {
   width: 100% !important;
-  height: calc(100% - 20px) !important;
+  height: calc(100% - 22px) !important;
 }
 
 .trend-color {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  justify-content: space-between;
   margin-top: 6px;
   font-size: 12px;
 }
